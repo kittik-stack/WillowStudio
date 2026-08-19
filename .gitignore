@@ -1,0 +1,10 @@
+x64/
+*.user
+.vs/
+.idea/
+*.filters
+ProjectHelloWorld/
+*.env
+.env.*
+node_modules/
+package-lock.json
