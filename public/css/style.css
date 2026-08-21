@@ -680,3 +680,24 @@ a {
         font-size: 30px;
     }
 }
+
+/* ============================================
+   ПРИЖИМАЕМ ПОДВАЛ К НИЗУ
+   ============================================ */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main, .page-content {
+    flex: 1;
+}
+
+/* Подвал теперь всегда внизу */
+footer {
+    flex-shrink: 0;
+}

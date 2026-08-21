@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WillowStudio — Студия лозоплетения в Минске</title>
+    <meta name="description" content="Плетёные изделия из натуральной сортовой ивы.">
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://static.tildacdn.ink/css/tilda-grid-3.0.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <link rel="stylesheet" href="https://static.tildacdn.ink/css/tilda-slds-1.4.min.css">
+    <link rel="stylesheet" href="https://static.tildacdn.ink/css/tilda-zoom-2.0.min.css">
+    <link rel="stylesheet" href="https://static.tildacdn.ink/css/fonts-tildasans.css">
+</head>
+
+<body>
+
+    <!-- ===== HEADER / МЕНЮ ===== -->
+    <header class="header" style="background-color: #000;">
+        <div class="container header__inner">
+            <a href="/" class="logo">WillowStudio</a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="#catalog">Каталог</a></li>
+                    <li><a href="#repair">Ремонт</a></li>
+                    <li class="nav__item-has-sub">
+                        <a href="#">Материалы</a>
+                        <ul class="nav__submenu">
+                            <li><a href="#materials">Ивовый прут</a></li>
+                            <li><a href="#materials">Черенки ивы</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Обучение</a></li>
+                    <li><a href="#reviews">Отзывы</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== ГЛАВНЫЙ ЭКРАН (HERO) ===== -->
+    <section class="hero"
+        style="background-image: url('https://static.tildacdn.ink/tild3534-6331-4036-b331-656466663832/IMG_8765.JPG');">
+        <div class="hero__overlay"></div>
+        <div class="container hero__content">
+            <h1 class="hero__title">WILLOW</h1>
+            <p class="hero__subtitle">студия лозоплетения</p>
+            <a href="https://instagram.com/willowstudio_minsk" target="_blank"
+                class="hero__link">@willowstudio_minsk</a>
+        </div>
+        <div class="hero__arrow">
+            <svg width="38" height="18" viewBox="0 0 38.417 18.592">
+                <path
+                    d="M19.208,18.592c-0.241,0-0.483-0.087-0.673-0.261L0.327,1.74c-0.408-0.372-0.438-1.004-0.066-1.413c0.372-0.409,1.004-0.439,1.413-0.066L19.208,16.24L36.743,0.261c0.411-0.372,1.042-0.342,1.413,0.066c0.372,0.408,0.343,1.041-0.065,1.413L19.881,18.332C19.691,18.505,19.449,18.592,19.208,18.592z" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- ===== ОПИСАНИЕ ===== -->
+    <section class="intro" style="background-color: #f0f0f0; padding: 90px 0 180px;">
+        <div class="container text-center">
+            <p class="intro__text">Ива уникальное растение! С древних времен она использовалась для плетения корзин,
+                мебели, колыбелей и многих других изделий. Она изящна, прочна и красива.<br>Наша основная концепция —
+                совмещение уюта и тепла натуральных материалов с полезными функциями.</p>
+        </div>
+    </section>
+
+    <!-- ===== КАТАЛОГ ===== -->
+    <section id="catalog" class="catalog" style="padding: 50px 0 150px;">
+        <div class="container">
+            <div class="catalog__grid">
+                <% products.forEach(product=> { %>
+                    <div class="product-card">
+                        <a href="/product/<%= product.id %>" class="product-card__link">
+                            <div class="product-card__image-wrapper">
+                                <% if (product.badge) { %>
+                                    <div class="product-card__badge">
+                                        <%= product.badge %>
+                                    </div>
+                                    <% } %>
+                                        <img src="<%= product.image %>" alt="<%= product.name %>" loading="lazy">
+                                        <% if (product.imageHover) { %>
+                                            <img src="<%= product.imageHover %>" alt="<%= product.name %> 2"
+                                                class="product-card__image-hover" loading="lazy">
+                                            <% } %>
+                            </div>
+                            <h3 class="product-card__title">
+                                <%= product.name %>
+                            </h3>
+                            <p class="product-card__desc">
+                                <%= product.description %>
+                            </p>
+                        </a>
+                    </div>
+                    <% }) %>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== О ПРОЕКТЕ ===== -->
+    <section id="reviews" class="about" style="background-color: #faf9f5; padding: 60px 0;">
+        <div class="container about__inner">
+            <div class="about__text">
+                <h2 class="about__title">О проекте</h2>
+                <p class="about__desc">WillowStudio_Minsk— это студия лозоплетеня авторских изделий из натуральной ивы в
+                    Минске. Каждое изделие выполняется вручную мастером. В качестве основного сырья используется ива
+                    разных сортов, которая выращивается на личной плантации и подготавливается к работе вручную.</p>
+            </div>
+            <div class="about__image">
+                <img src="https://static.tildacdn.ink/tild3462-3432-4632-a536-333165396130/IMG_8415.JPG" alt="О проекте"
+                    loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== УСЛУГИ / РЕМОНТ ===== -->
+    <section id="repair" class="services" style="background-color: #f2f2f2; padding: 135px 0 165px;">
+        <div class="container services__grid">
+            <div class="service-item">
+                <img src="https://static.tildacdn.ink/tild6366-3565-4632-b438-306166633766/348268319_1388176291.jpg"
+                    alt="Ремонт">
+                <div class="service-item__content">
+                    <span class="service-item__tag">Ремонт / реставрация</span>
+                    <h3>Ремонт плетёных изделий</h3>
+                    <p>Бывает, что любимая корзинка или (другое изделие) была повреждена из-за высокой нагрузки,
+                        неправильного хранения или просто от времени. В таком случае ее можно попробовать восстановить и
+                        она снова будет служить долгие годы</p>
+                </div>
+            </div>
+            <div class="service-item">
+                <img src="https://static.tildacdn.ink/tild6137-3637-4538-b232-616630363131/300068776_4094707278.jpg"
+                    alt="Материалы">
+                <div class="service-item__content">
+                    <span class="service-item__tag">Материалы</span>
+                    <h3>Ива для плетения</h3>
+                    <p>Для плетения нужна хорошего качества ива. Особенно популярна сортовая ива, таких сортов как:
+                        пурпурная, американка гиганская, американка польская, корзиночная, трёхтычинковая, каспийская,
+                        "пластилиновая", маяк2. Именно их мы выращиваем и используем для изделий. Каждый сорт по своему
+                        хорош.</p>
+                </div>
+            </div>
+            <div class="service-item">
+                <img src="https://static.tildacdn.ink/tild3835-3764-4463-a437-653435383738/346084823_9271600818.jpg"
+                    alt="Обучение">
+                <div class="service-item__content">
+                    <span class="service-item__tag">Обучение</span>
+                    <h3>Мастер-классы и курсы по лозоплетению в Минске</h3>
+                    <p>Обучаться лозоплетению может каждый и в любом возрасте. Над созданием курсов задумываюсь, и
+                        прорабатываю этоту возможность.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ГАЛЕРЕЯ ===== -->
+    <section style="background-color: #faf9f5; padding-bottom: 180px;">
+        <div class="container text-center" style="padding: 90px 0 60px;">
+            <span class="section-tag">Следите за нами в <a href="https://instagram.com/willowstudio_minsk"
+                    target="_blank">instagram</a></span>
+            <h2 class="section-title">Наш генеральный директор и контролёр качества :)</h2>
+        </div>
+        <div class="container gallery-grid">
+            <div class="gallery-grid__item gallery-grid__item--big">
+                <img src="https://static.tildacdn.ink/tild6533-6439-4435-a633-643565643735/IMG_7579.JPG" alt="Галерея 1"
+                    loading="lazy">
+            </div>
+            <div class="gallery-grid__item">
+                <img src="https://static.tildacdn.ink/tild6364-6334-4735-b237-646661366538/DSC06190.JPG" alt="Галерея 2"
+                    loading="lazy">
+            </div>
+            <div class="gallery-grid__item">
+                <img src="https://static.tildacdn.ink/tild6637-6431-4163-b366-313035306465/IMG_8223.JPG" alt="Галерея 3"
+                    loading="lazy">
+            </div>
+            <div class="gallery-grid__item">
+                <img src="https://static.tildacdn.ink/tild3465-3235-4166-b364-383763323666/IMG_7699.JPG" alt="Галерея 4"
+                    loading="lazy">
+            </div>
+            <div class="gallery-grid__item">
+                <img src="https://static.tildacdn.ink/tild3265-3731-4530-b937-383535326534/IMG_7437.JPG" alt="Галерея 5"
+                    loading="lazy">
+            </div>
+            <div class="gallery-grid__item">
+                <img src="https://static.tildacdn.ink/tild3134-3933-4066-b130-346162623132/IMG_7969.JPG" alt="Галерея 6"
+                    loading="lazy">
+            </div>
+            <div class="gallery-grid__item">
+                <img src="https://static.tildacdn.ink/tild3631-6637-4430-b630-376434353639/IMG_8082.JPG" alt="Галерея 7"
+                    loading="lazy">
+            </div>
+            <div class="gallery-grid__item gallery-grid__item--big">
+                <img src="https://static.tildacdn.ink/tild6666-3335-4263-b633-383165663137/IMG_8611.JPG" alt="Галерея 8"
+                    loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== КОНТАКТЫ ===== -->
+    <section id="contacts" class="contacts" style="padding: 120px 0 180px;">
+        <div class="container text-center">
+            <div class="contacts__inner">
+                <h2 class="contacts__title">Для писем и сообщений!</h2>
+                <div class="contacts__avatar">
+                    <img src="https://static.tildacdn.ink/tild3532-3138-4430-b064-623837366332/IMG_7707.JPG"
+                        alt="Аватар">
+                </div>
+                <p class="contacts__email"><strong>E-mail:</strong> kolyta@yandex.ru</p>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/willowstudio_minsk/" target="_blank" aria-label="Instagram">
+                        <svg width="30" height="30" viewBox="0 0 100 100">
+                            <path
+                                d="M50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100ZM25 39.3918C25 31.4558 31.4566 25 39.3918 25H60.6082C68.5442 25 75 31.4566 75 39.3918V60.8028C75 68.738 68.5442 75.1946 60.6082 75.1946H39.3918C31.4558 75.1946 25 68.738 25 60.8028V39.3918ZM36.9883 50.0054C36.9883 42.8847 42.8438 37.0922 50.0397 37.0922C57.2356 37.0922 63.0911 42.8847 63.0911 50.0054C63.0911 57.1252 57.2356 62.9177 50.0397 62.9177C42.843 62.9177 36.9883 57.1252 36.9883 50.0054ZM41.7422 50.0054C41.7422 54.5033 45.4641 58.1638 50.0397 58.1638C54.6153 58.1638 58.3372 54.5041 58.3372 50.0054C58.3372 45.5066 54.6145 41.8469 50.0397 41.8469C45.4641 41.8469 41.7422 45.5066 41.7422 50.0054ZM63.3248 39.6355C65.0208 39.6355 66.3956 38.2606 66.3956 36.5646C66.3956 34.8687 65.0208 33.4938 63.3248 33.4938C61.6288 33.4938 60.2539 34.8687 60.2539 36.5646C60.2539 38.2606 61.6288 39.6355 63.3248 39.6355Z"
+                                fill="#000" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        console.log('WillowStudio готов к работе');
+    </script>
+
+    <script src="https://static.tildacdn.ink/js/tilda-slds-1.4.min.js"></script>
+    <script src="https://static.tildacdn.ink/js/tilda-zoom-2.0.min.js"></script>
+</body>
+
+</html>

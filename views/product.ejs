@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= product.name %> — WillowStudio
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://static.tildacdn.ink/css/fonts-tildasans.css">
+</head>
+
+<body>
+
+    <!-- ===== ХЕДЕР (как на главной) ===== -->
+    <header class="header">
+        <div class="container header__inner">
+            <a href="/" class="logo">WillowStudio</a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="/#catalog">Каталог</a></li>
+                    <li><a href="/#reviews">О нас</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="page-content">
+        <!-- ===== СТРАНИЦА ТОВАРА ===== -->
+        <section class="product-page" style="padding-top: 120px;">
+            <div class="container">
+                <a href="/#catalog" class="back-link">← Назад в каталог</a>
+
+                <div class="product-page__inner">
+                    <div class="product-page__gallery">
+                        <img src="<%= product.image %>" alt="<%= product.name %>"
+                            style="width: 100%; border-radius: 8px;">
+                    </div>
+                    <div class="product-page__info">
+                        <h1 class="product-page__title">
+                            <%= product.name %>
+                        </h1>
+                        <p class="product-page__price" style="font-size: 24px; font-weight: 500; margin-bottom: 20px;">
+                            <%= product.price %> BYN
+                        </p>
+                        <p class="product-page__description">
+                            <%= product.fullDescription || product.description %>
+                        </p>
+                        <form action="/cart/add/<%= product.id %>" method="POST">
+                            <button type="submit" class="product-page__btn">Добавить в корзину</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- ===== ПОДВАЛ ===== -->
+    <footer style="text-align: center; padding: 30px; background: #000; color: #fff;">
+        <p>© WillowStudio 2026</p>
+    </footer>
+
+
+
+</body>
+
+</html>
