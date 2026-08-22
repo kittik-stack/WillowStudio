@@ -36,10 +36,10 @@ app.set('view engine', 'ejs');
 
 app.use(express.static("public"));
 app.use(session({
-    secret: secret ,
+    secret: secret,
     resave: resave,
     saveUninitialized: saveUninitialized,
-    cookie: {secure: cookie_secure}
+    cookie: { secure: cookie_secure }
 }));
 app.use((req, res, next) => {
     const now = new Date();
@@ -88,21 +88,24 @@ const products = [
 ];
 
 app.get("/", (req, res) => {
-     if (!req.session.cart) {
+    if (!req.session.cart) {
         req.session.cart = [];
     }
     res.render('index', { products });
 });
 
 app.get('/cart', (req, res) => {
-    app.get('/cart', (req, res) => {
-    res.json({
-        cart: req.session.cart || [],
-        sessionID: req.sessionID,
-        session: req.session
-    });
+    const cart = req.session.cart || [];
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    res.render('cart', { cart, total });
 });
+
+
+app.get('/check-session', (req, res) => {
+    res.json(req.session);
 });
+
+
 
 app.get('/product/:id', (req, res) => {
     const id = parseInt(req.params.id);
@@ -116,7 +119,7 @@ app.get('/product/:id', (req, res) => {
 
 
 app.post('/cart/add/:id', (req, res) => {
-     if (!req.session.cart) {
+    if (!req.session.cart) {
         req.session.cart = [];
     }
     const productId = parseInt(req.params.id);
@@ -128,6 +131,19 @@ app.post('/cart/add/:id', (req, res) => {
     } else {
         res.status(404).send('Товар не найден');
     }
+});
+
+app.post('/cart/remove/:index', (req, res) => {
+    const index = parseInt(req.params.index);
+    if (req.session.cart && index < req.session.cart.length) {
+        req.session.cart.splice(index, 1);
+    }
+    res.redirect('/cart');
+});
+
+app.post('/cart/clear', (req, res) => {
+    req.session.cart = [];
+    res.redirect('/cart');
 });
 
 app.listen(PORT, () => {

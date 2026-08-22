@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина — WillowStudio</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://static.tildacdn.ink/css/fonts-tildasans.css">
+    <link rel="icon" type="image/png" href="/images/icon.png">
+</head>
+<body>
+    <header class="header">
+        <div class="container header__inner">
+            <a href="/" class="logo">WillowStudio</a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="/#catalog">Каталог</a></li>
+                    <li><a href="/#reviews">О нас</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <section class="cart-page" style="padding-top: 120px; padding-bottom: 80px;">
+            <div class="container">
+                <h1 class="cart-page__title">Корзина</h1>
+                
+                <% if (cart.length === 0) { %>
+                    <p class="cart-page__empty">Ваша корзина пуста. <a href="/#catalog">Вернуться к покупкам</a></p>
+                <% } else { %>
+                    <div class="cart-page__grid">
+                        <% cart.forEach((item, index) => { %>
+                            <div class="cart-item">
+                                <img src="<%= item.image %>" alt="<%= item.name %>" class="cart-item__image">
+                                <div class="cart-item__info">
+                                    <h3 class="cart-item__title"><%= item.name %></h3>
+                                    <p class="cart-item__price"><%= item.price %> BYN</p>
+                                </div>
+                                <form action="/cart/remove/<%= index %>" method="POST">
+                                    <button type="submit" class="cart-item__remove">✕</button>
+                                </form>
+                            </div>
+                        <% }) %>
+                    </div>
+                    
+                    <div class="cart-page__total">
+                        <p>Итого: <strong><%= total %> BYN</strong></p>
+                        <form action="/cart/clear" method="POST">
+                            <button type="submit" class="cart-page__clear">Очистить корзину</button>
+                        </form>
+                    </div>
+                <% } %>
+                
+                <a href="/#catalog" class="back-link">← Продолжить покупки</a>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 30px; background: #000; color: #fff;">
+        <p>© WillowStudio 2026</p>
+    </footer>
+</body>
+</html>

@@ -9,6 +9,7 @@
     </title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://static.tildacdn.ink/css/fonts-tildasans.css">
+    <link rel="icon" type="image/png" href="/images/icon.png">
 </head>
 
 <body>
@@ -46,9 +47,12 @@
                         <p class="product-page__description">
                             <%= product.fullDescription || product.description %>
                         </p>
-                        <form action="/cart/add/<%= product.id %>" method="POST">
-                            <button type="submit" class="product-page__btn">Добавить в корзину</button>
+                        <form action="/cart" method="POST">
+                            <button type="submit" class="product-page__btn">ТЕСТОВАЯ КНОПКА</button>
                         </form>
+<form action="/cart/add/<%= product.id %>" method="POST">
+    <button type="submit" class="product-page__btn">Добавить в корзину</button>
+</form>
                     </div>
                 </div>
             </div>
