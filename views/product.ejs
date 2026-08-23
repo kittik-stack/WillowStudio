@@ -47,12 +47,9 @@
                         <p class="product-page__description">
                             <%= product.fullDescription || product.description %>
                         </p>
-                        <form action="/cart" method="POST">
-                            <button type="submit" class="product-page__btn">ТЕСТОВАЯ КНОПКА</button>
+                        <form action="/cart/add/<%= product.id %>" method="POST">
+                            <button type="submit" class="product-page__btn">Добавить в корзину</button>
                         </form>
-<form action="/cart/add/<%= product.id %>" method="POST">
-    <button type="submit" class="product-page__btn">Добавить в корзину</button>
-</form>
                     </div>
                 </div>
             </div>

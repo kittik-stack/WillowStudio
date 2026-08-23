@@ -15,9 +15,6 @@ const db_user = process.env.DB_USER;
 const db_password = process.env.DB_PASSWORD;
 
 const secret = process.env.SECRET;
-const resave = process.env.RESAVE;
-const saveUninitialized = process.env.SAVE_UNINITIALIZED;
-const cookie_secure = process.env.COOKIR_SECURE;
 
 const pool = mysql.createPool({
     host: db_host,
@@ -37,9 +34,9 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(session({
     secret: secret,
-    resave: resave,
-    saveUninitialized: saveUninitialized,
-    cookie: { secure: cookie_secure }
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false }
 }));
 app.use((req, res, next) => {
     const now = new Date();
@@ -94,7 +91,13 @@ app.get("/", (req, res) => {
     res.render('index', { products });
 });
 
+// app.get('/cart', (req, res) => {
+//     const cart = req.session.cart || [];
+//     const total = cart.reduce((sum, item) => sum + item.price, 0);
+//     res.render('cart', { cart, total });
+// });
 app.get('/cart', (req, res) => {
+    console.log('🔍 Проверка корзины:', req.session.cart);
     const cart = req.session.cart || [];
     const total = cart.reduce((sum, item) => sum + item.price, 0);
     res.render('cart', { cart, total });
@@ -118,16 +121,37 @@ app.get('/product/:id', (req, res) => {
 
 
 
+// app.post('/cart/add/:id', (req, res) => {
+//     if (!req.session.cart) {
+//         req.session.cart = [];
+//     }
+//     const productId = parseInt(req.params.id);
+//     const product = products.find(p => p.id === productId);
+//     if (product) {
+//         req.session.cart.push(product);
+//         res.redirect(`/product/${productId}`);
+//         console.log(`товар ${product.name} добавлен`)
+//     } else {
+//         res.status(404).send('Товар не найден');
+//     }
+// });
+
 app.post('/cart/add/:id', (req, res) => {
+    // Проверяем, что было в сессии ДО добавления
+    console.log('🟡 ДО добавления:', req.session.cart);
+    
     if (!req.session.cart) {
         req.session.cart = [];
     }
+    
     const productId = parseInt(req.params.id);
     const product = products.find(p => p.id === productId);
+    
     if (product) {
         req.session.cart.push(product);
+        console.log('✅ Товар добавлен:', product.name);
+        console.log('🟢 ПОСЛЕ добавления:', req.session.cart);
         res.redirect(`/product/${productId}`);
-        console.log(`товар ${product.name} добавлен`)
     } else {
         res.status(404).send('Товар не найден');
     }
