@@ -27,6 +27,23 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
+async function getAllProducts() {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const [rows] = await conn.query('SELECT * FROM product');
+        console.log(`Прочитано ${rows.length} товаров из БД.`);
+        return rows;
+    } catch (err) {
+        console.error("Ошибка при чтении из БД: " + err.message);
+        return [];
+    }
+    finally {
+        if (conn) conn.release();
+    }
+
+}
+
 app.set('view engine', 'ejs');
 
 //middleware
@@ -51,51 +68,20 @@ app.use((req, res, next) => {
     next();
 });
 
-const products = [
-    {
-        id: 1,
-        name: "Кашпо",
-        price: 45,
-        image: "https://static.tildacdn.ink/tild3332-3863-4833-b038-373233356130/IMG_7721.JPG",
-        imageHover: "https://static.tildacdn.ink/tild6236-3733-4633-a263-396439393539/IMG_7725.JPG",
-        badge: "NEW",
-        description: "Кашпо для цветов",
-        fullDescription: "Кашпо изготавливаются на плетеном донышеке или на фанерном. Для улицы лучше плести кашпо из неокарённой ивы и покрыть средством для древесины. Возможно изготовление любого количества и размера."
-    },
-    {
-        id: 2,
-        name: "Корзины и кошики",
-        price: 30,
-        image: "https://static.tildacdn.ink/tild3338-3739-4066-b466-636531303161/IMG_8199.JPG",
-        imageHover: "https://static.tildacdn.ink/tild6435-3264-4231-b038-663835316239/IMG_8192.JPG",
-        badge: null,
-        description: "Новые, красивые плетёные корзинки из натуральной ивы",
-        fullDescription: "Можно использовать в быту, для подарков и цветов."
-    },
-    {
-        id: 3,
-        name: "Венки",
-        price: 25,
-        image: "https://static.tildacdn.ink/tild3164-3936-4436-b630-393464653466/20221015_105514370.jpg",
-        imageHover: "https://static.tildacdn.ink/tild3838-6362-4234-b538-353231306230/noroot.jpg",
-        badge: null,
-        description: "Венок для декорирования из натуральной лозы",
-        fullDescription: "Венки изготавливаются из очищенной и неочищенной от коры ивовой лозы. Используются для декорирования вашего дома. Стандартные размеры: 10, 15, 20, 25, 30, 35, 40, 45 см."
-    },
-];
 
-app.get("/", (req, res) => {
-    if (!req.session.cart) {
-        req.session.cart = [];
+app.get("/", async (req, res) => {
+    try {
+        const products = await getAllProducts();
+        if (!req.session.cart) {
+            req.session.cart = [];
+        }
+        res.render('index', { products });
+    } catch (err) {
+        console.error('Ошибка в /:', err);
+        res.status(500).send('Ошибка сервера');
     }
-    res.render('index', { products });
 });
 
-// app.get('/cart', (req, res) => {
-//     const cart = req.session.cart || [];
-//     const total = cart.reduce((sum, item) => sum + item.price, 0);
-//     res.render('cart', { cart, total });
-// });
 app.get('/cart', (req, res) => {
     console.log('🔍 Проверка корзины:', req.session.cart);
     const cart = req.session.cart || [];
@@ -109,51 +95,38 @@ app.get('/check-session', (req, res) => {
 });
 
 
+app.get('/product/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const products = await getAllProducts();
+        const product = products.find(p => p.id === id);
 
-app.get('/product/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const product = products.find(p => p.id === id);
-    if (!product) {
-        return res.status(404).send('Товар не найден');
+        if (!product) {
+            return res.status(404).send('Товар не найден');
+        }
+        res.render('product', { product });
+    } catch (err) {
+        console.error('Ошибка в /product/:id:', err);
+        res.status(500).send('Ошибка сервера');
     }
-    res.render('product', { product });
 });
 
 
 
-// app.post('/cart/add/:id', (req, res) => {
-//     if (!req.session.cart) {
-//         req.session.cart = [];
-//     }
-//     const productId = parseInt(req.params.id);
-//     const product = products.find(p => p.id === productId);
-//     if (product) {
-//         req.session.cart.push(product);
-//         res.redirect(`/product/${productId}`);
-//         console.log(`товар ${product.name} добавлен`)
-//     } else {
-//         res.status(404).send('Товар не найден');
-//     }
-// });
-
-app.post('/cart/add/:id', (req, res) => {
-    // Проверяем, что было в сессии ДО добавления
-    console.log('🟡 ДО добавления:', req.session.cart);
-    
-    if (!req.session.cart) {
-        req.session.cart = [];
-    }
-    
-    const productId = parseInt(req.params.id);
-    const product = products.find(p => p.id === productId);
-    
-    if (product) {
+app.post('/cart/add/:id', async (req, res) => {
+    try {
+        if (!req.session.cart) req.session.cart = [];
+        
+        const products = await getAllProducts();
+        const product = products.find(p => p.id === parseInt(req.params.id));
+        
+        if (!product) return res.status(404).send('Товар не найден');
+        
         req.session.cart.push(product);
-        console.log('✅ Товар добавлен:', product.name);
-        console.log('🟢 ПОСЛЕ добавления:', req.session.cart);
-        res.redirect(`/product/${productId}`);
-    } else {
-        res.status(404).send('Товар не найден');
+        res.redirect(`/product/${req.params.id}`);
+    } catch (err) {
+        console.error('Ошибка в /cart/add/:id:', err);
+        res.status(500).send('Ошибка сервера');
     }
 });
 
