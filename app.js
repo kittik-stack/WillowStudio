@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const session = require("express-session");
+const path = require('path');
 const fs = require("fs");
 const mysql = require("mysql2/promise");
 const app = express();
@@ -47,8 +48,8 @@ async function getAllProducts() {
 app.set('view engine', 'ejs');
 
 //middleware
-
 app.use(express.static("public"));
+app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 app.use(session({
     secret: secret,
     resave: true,
@@ -83,7 +84,6 @@ app.get("/", async (req, res) => {
 });
 
 app.get('/cart', (req, res) => {
-    console.log('🔍 Проверка корзины:', req.session.cart);
     const cart = req.session.cart || [];
     const total = cart.reduce((sum, item) => sum + item.price, 0);
     res.render('cart', { cart, total });
