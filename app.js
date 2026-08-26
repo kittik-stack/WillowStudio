@@ -45,11 +45,26 @@ async function getAllProducts() {
 
 }
 
-app.set('view engine', 'ejs');
+let productsCache = [];
 
-//middleware
-app.use(express.static("public"));
+async function updateProductsCache() {
+try {
+        productsCache = await getAllProducts();
+        console.log(`🔄 Кэш обновлён: ${productsCache.length} товаров`);
+    } catch (err) {
+        console.error('Ошибка при обновлении кэша:', err);
+        productsCache = [];
+    }
+}
+
+updateProductsCache();
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'source', 'views'));
+app.use(express.static(path.join(__dirname, 'source', 'public')));
 app.use('/images', express.static(path.join(__dirname, '..', 'images')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(session({
     secret: secret,
     resave: true,
@@ -72,11 +87,11 @@ app.use((req, res, next) => {
 
 app.get("/", async (req, res) => {
     try {
-        const products = await getAllProducts();
+        // const products = await getAllProducts();
         if (!req.session.cart) {
             req.session.cart = [];
         }
-        res.render('index', { products });
+        res.render('index', { products: productsCache });
     } catch (err) {
         console.error('Ошибка в /:', err);
         res.status(500).send('Ошибка сервера');
@@ -97,10 +112,7 @@ app.get('/check-session', (req, res) => {
 
 app.get('/product/:id', async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
-        const products = await getAllProducts();
-        const product = products.find(p => p.id === id);
-
+        const product = productsCache.find(p => p.id === parseInt(req.params.id));
         if (!product) {
             return res.status(404).send('Товар не найден');
         }
@@ -112,20 +124,58 @@ app.get('/product/:id', async (req, res) => {
 });
 
 
-
 app.post('/cart/add/:id', async (req, res) => {
     try {
         if (!req.session.cart) req.session.cart = [];
-        
-        const products = await getAllProducts();
-        const product = products.find(p => p.id === parseInt(req.params.id));
-        
+
+        const product = productsCache.find(p => p.id === parseInt(req.params.id));
+
         if (!product) return res.status(404).send('Товар не найден');
-        
+
         req.session.cart.push(product);
         res.redirect(`/product/${req.params.id}`);
     } catch (err) {
         console.error('Ошибка в /cart/add/:id:', err);
+        res.status(500).send('Ошибка сервера');
+    }
+});
+
+app.post('/admin/products', async (req, res) => {
+    await pool.query('INSERT INTO product ...', [name, price]);
+    await updateProductsCache();
+    res.redirect('/admin');
+});
+
+app.get('/admin/add', (req, res) => {
+    res.send(`
+        <form action="/admin/add" method="POST">
+            <input name="name" placeholder="Название" required>
+            <input name="price" placeholder="Цена" type="number" required>
+            <input name="image" placeholder="URL картинки">
+            <input name="imageHover" placeholder="URL второй картинки (опционально)">
+            <input name="badge" placeholder="Бейдж (например, NEW)">
+            <input name="description" placeholder="Краткое описание">
+            <input name="fullDescription" placeholder="Полное описание">
+            <button type="submit">Добавить товар</button>
+        </form>
+    `);
+});
+
+app.post('/admin/add', async (req, res) => {
+    try {
+        const { name, price, image, imageHover, badge, description, fullDescription } = req.body;
+        
+        await pool.query(
+            `INSERT INTO product 
+            (name, price, image, imageHover, badge, description, fullDescription) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [name, price, image, imageHover || null, badge || null, description || null, fullDescription || null]
+        );
+        
+        await updateProductsCache();
+        res.send(' Товар добавлен <a href="/admin/add">Добавить ещё</a>');
+    } catch (err) {
+        console.error('Ошибка при добавлении:', err);
         res.status(500).send('Ошибка сервера');
     }
 });
