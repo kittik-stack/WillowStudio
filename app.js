@@ -34,7 +34,11 @@ async function getAllProducts() {
         conn = await pool.getConnection();
         const [rows] = await conn.query('SELECT * FROM product');
         console.log(`Прочитано ${rows.length} товаров из БД.`);
-        return rows;
+        const products = rows.map(p => ({
+        ...p,
+        price: parseFloat(p.price)
+    }));
+    return products;
     } catch (err) {
         console.error("Ошибка при чтении из БД: " + err.message);
         return [];
@@ -50,10 +54,18 @@ let productsCache = [];
 async function updateProductsCache() {
 try {
         productsCache = await getAllProducts();
-        console.log(`🔄 Кэш обновлён: ${productsCache.length} товаров`);
+        console.log(`Кэш обновлён: ${productsCache.length} товаров`);
     } catch (err) {
         console.error('Ошибка при обновлении кэша:', err);
         productsCache = [];
+    }
+}
+
+function isAdmin(req, res, next) {
+    if(req.sessionisAdmin){
+        next();
+    } else {
+        res.redirect('/admin/login');
     }
 }
 
@@ -83,15 +95,14 @@ app.use((req, res, next) => {
     });
     next();
 });
-
+  
 
 app.get("/", async (req, res) => {
     try {
-        // const products = await getAllProducts();
-        if (!req.session.cart) {
-            req.session.cart = [];
-        }
-        res.render('index', { products: productsCache });
+        if (!req.session.cart) req.session.cart = [];
+        const cartCount = req.session.cart.length;
+        const cartTotal = req.session.cart.reduce((sum, item) => sum + parseFloat(item.price), 0);
+        res.render('index', { products: productsCache, cartCount, cartTotal });
     } catch (err) {
         console.error('Ошибка в /:', err);
         res.status(500).send('Ошибка сервера');
@@ -100,23 +111,18 @@ app.get("/", async (req, res) => {
 
 app.get('/cart', (req, res) => {
     const cart = req.session.cart || [];
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    res.render('cart', { cart, total });
+    const total = cart.reduce((sum, item) => sum + parseFloat(item.price), 0);
+    const cartCount = cart.length;
+    res.render('cart', { cart, total, cartCount, cartTotal: total });
 });
-
-
-app.get('/check-session', (req, res) => {
-    res.json(req.session);
-});
-
 
 app.get('/product/:id', async (req, res) => {
     try {
         const product = productsCache.find(p => p.id === parseInt(req.params.id));
-        if (!product) {
-            return res.status(404).send('Товар не найден');
-        }
-        res.render('product', { product });
+        if (!product) return res.status(404).send('Товар не найден');
+        const cartCount = req.session.cart ? req.session.cart.length : 0;
+        const cartTotal = req.session.cart ? req.session.cart.reduce((sum, item) => sum + parseFloat(item.price), 0) : 0;
+        res.render('product', { product, cartCount, cartTotal });
     } catch (err) {
         console.error('Ошибка в /product/:id:', err);
         res.status(500).send('Ошибка сервера');
@@ -192,6 +198,7 @@ app.post('/cart/clear', (req, res) => {
     req.session.cart = [];
     res.redirect('/cart');
 });
+
 
 app.listen(PORT, () => {
     console.log(`try server on http://${HOST}:${PORT}`);
