@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить товар — WillowStudio</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://static.tildacdn.ink/css/fonts-tildasans.css">
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <style>
+        .admin-header {
+            background: #1a1a1a;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        .admin-header__inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-header__logo {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .admin-header__links a {
+            color: #fff;
+            margin-left: 20px;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        .admin-header__links a:hover {
+            opacity: 0.7;
+        }
+        .admin-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .admin-form__group {
+            margin-bottom: 20px;
+        }
+        .admin-form__label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .admin-form__input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .admin-form__btn {
+            padding: 12px 32px;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .admin-form__btn:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <div class="container admin-header__inner">
+            <span class="admin-header__logo">Админ-панель</span>
+            <div class="admin-header__links">
+                <a href="/admin/dashboard">← Назад</a>
+                <a href="/">На сайт</a>
+                <a href="/admin/logout">Выйти</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 40px;">Добавить новый товар</h1>
+
+        <form action="/admin/add" method="POST" class="admin-form">
+            <div class="admin-form__group">
+                <label class="admin-form__label">Название *</label>
+                <input type="text" name="name" class="admin-form__input" required>
+            </div>
+
+            <div class="admin-form__group">
+                <label class="admin-form__label">Цена *</label>
+                <input type="number" step="0.01" name="price" class="admin-form__input" required>
+            </div>
+
+            <div class="admin-form__group">
+                <label class="admin-form__label">URL картинки</label>
+                <input type="text" name="image" class="admin-form__input" placeholder="https://example.com/image.jpg">
+            </div>
+
+            <div class="admin-form__group">
+                <label class="admin-form__label">URL второй картинки (hover)</label>
+                <input type="text" name="imageHover" class="admin-form__input" placeholder="https://example.com/image-hover.jpg">
+            </div>
+
+            <div class="admin-form__group">
+                <label class="admin-form__label">Бейдж (NEW, SALE и т.д.)</label>
+                <input type="text" name="badge" class="admin-form__input" placeholder="NEW">
+            </div>
+
+            <div class="admin-form__group">
+                <label class="admin-form__label">Краткое описание</label>
+                <input type="text" name="description" class="admin-form__input" placeholder="Краткое описание товара">
+            </div>
+
+            <div class="admin-form__group">
+                <label class="admin-form__label">Полное описание</label>
+                <textarea name="fullDescription" class="admin-form__input" rows="4" placeholder="Подробное описание"></textarea>
+            </div>
+
+            <button type="submit" class="admin-form__btn">Добавить товар</button>
+        </form>
+    </div>
+</body>
+</html>

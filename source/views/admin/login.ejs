@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в админку — WillowStudio</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://static.tildacdn.ink/css/fonts-tildasans.css">
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <style>
+        .admin-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+        .admin-login__box {
+            background: #fff;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .admin-login__title {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .admin-login__subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .admin-login__error {
+            background: #fee;
+            color: #c00;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .admin-login__input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .admin-login__btn {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .admin-login__btn:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login">
+        <div class="admin-login__box">
+            <h1 class="admin-login__title">WillowStudio</h1>
+            <p class="admin-login__subtitle">Вход в админ-панель</p>
+
+            <% if (error) { %>
+                <div class="admin-login__error"><%= error %></div>
+            <% } %>
+
+            <form action="/admin/login" method="POST">
+                <input type="password" name="password" class="admin-login__input" placeholder="Введите пароль" required>
+                <button type="submit" class="admin-login__btn">Войти</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
